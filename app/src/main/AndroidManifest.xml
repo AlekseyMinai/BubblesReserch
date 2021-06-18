@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BubbleButtonReserch">
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,15 +25,25 @@
                 android:resource="@xml/shortcuts"/>
         </activity>
         <activity
-            android:name=".BubbleActivity"
+            android:name=".ui.BubbleActivity"
             android:allowEmbedded="true"
             android:resizeableActivity="true"
+            android:label="@string/app_name"
             android:documentLaunchMode="always"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
-            tools:targetApi="n" />
+            tools:targetApi="n" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="android.example.com"
+                    android:pathPattern="/chat/*"
+                    android:scheme="https" />
+            </intent-filter>
+        </activity>
 
-        <service android:name=".FloatingButtonService"/>
-        <service android:name=".BubbleButtonService"/>
+        <service android:name=".services.FloatingButtonService"/>
+        <service android:name=".services.BubbleButtonService"/>
 
     </application>
 

@@ -12,6 +12,9 @@ import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.net.toUri
+import com.alesno.bubblebuttonreserch.ui.BubbleActivity
+import com.alesno.bubblebuttonreserch.ui.MainActivity
 
 object BubbleNotificationManager {
 
@@ -44,7 +47,7 @@ object BubbleNotificationManager {
 
 
         val notification = Notification.Builder(context, "123")
-            //.setContentIntent(bubbleIntent)
+            .setContentIntent(bubbleIntent)
             .setSmallIcon(R.drawable.ic_snowflake)
             .setCategory(Notification.CATEGORY_CALL)
             .setContentTitle("Title")
@@ -54,21 +57,24 @@ object BubbleNotificationManager {
             .setStyle(style)
             .addPerson(person)
             .setShowWhen(true)
-            //.setShortcutId(shortcut.id)
+            .setShortcutId(shortcut.id)
             .build()
-//        val notificationManager =
-//            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-//
-//        NotificationManagerCompat.from(context).apply {
-//            notificationManager.notify(1, notification)
-//        }
+        val notificationManager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        NotificationManagerCompat.from(context).apply {
+            notificationManager.notify(1, notification)
+        }
         return notification
     }
 
     private fun createBubbleIntent(context: Context): PendingIntent {
+        val contentUri = "https://android.example.com/chat/1".toUri()
+
         val target = Intent(context, BubbleActivity::class.java)
             .setAction(Intent.ACTION_VIEW)
-        return PendingIntent.getActivity(context, 0, target,0)
+            .setData(contentUri)
+        return PendingIntent.getActivity(context, 0, target, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -77,8 +83,8 @@ object BubbleNotificationManager {
             .setIntent(bubbleIntent)
             .setIcon(Icon.createWithResource(context, R.drawable.ic_snowflake))
             .setDesiredHeight(600)
-            .setAutoExpandBubble(true)
-            .setSuppressNotification(true)
+            //.setAutoExpandBubble(true)
+            //.setSuppressNotification(true)
             .build()
 
     @RequiresApi(Build.VERSION_CODES.P)

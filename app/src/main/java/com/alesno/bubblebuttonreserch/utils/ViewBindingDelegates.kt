@@ -46,4 +46,3 @@ inline fun <T : ViewBinding> Fragment.viewBindings(
     override fun isInitialized(): Boolean = mCached != null
 
 }
-

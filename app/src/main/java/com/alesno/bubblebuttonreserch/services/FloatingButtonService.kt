@@ -1,4 +1,4 @@
-package com.alesno.bubblebuttonreserch
+package com.alesno.bubblebuttonreserch.services
 
 import android.app.Service
 import android.content.Intent
@@ -8,6 +8,7 @@ import android.os.IBinder
 import android.view.Gravity
 import android.view.WindowManager
 import android.widget.ImageView
+import com.alesno.bubblebuttonreserch.R
 
 
 class FloatingButtonService : Service() {
