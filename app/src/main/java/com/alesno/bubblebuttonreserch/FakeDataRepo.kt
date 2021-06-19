@@ -38,6 +38,17 @@ object FakeDataRepo {
                 MessageViewState("Хорошо, как у тебя?", "18.06.21", MessageViewState.Type.INCOMING),
             )
         )
+        conversations["2"] = ConversationViewState(
+            participant = Participant(
+                name = "Paul Bruce Dickinson",
+                avatarUrl = "https://www.google.com/url?sa=i&url=https%3A%2F%2Fok.ru%2Frocksta%2Ftopic%2F66997626656035&psig=AOvVaw3AHltKMCiGjVXXTSBcduKU&ust=1624183425604000&source=images&cd=vfe&ved=0CAoQjRxqFwoTCODzjPW4o_ECFQAAAAAdAAAAABAD"
+            ),
+            messages = mutableListOf(
+                MessageViewState("Привет, Брюс!", "19.06.21", MessageViewState.Type.OUTGOING),
+                MessageViewState("Когда новый альбом?", "19.06.21", MessageViewState.Type.OUTGOING),
+                MessageViewState("Уже скоро", "19.06.21", MessageViewState.Type.INCOMING),
+            )
+        )
         return conversations
     }
 

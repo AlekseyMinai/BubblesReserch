@@ -2,6 +2,7 @@ package com.alesno.bubblebuttonreserch.ui.conversation
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.alesno.bubblebuttonreserch.R
@@ -21,7 +22,8 @@ class ConversationFragment : Fragment(R.layout.fragment_conversation) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.messageList.adapter = mAdapter
         initToolbar()
-        mViewModel.init()
+        val conversationId = arguments?.getString(TAG_ID) ?: throw Exception()
+        mViewModel.init(conversationId)
         subscribeToViewModel()
     }
 
@@ -40,6 +42,7 @@ class ConversationFragment : Fragment(R.layout.fragment_conversation) {
         val context = context ?: return@with
         mAdapter.submitList(conversationViewState.messages)
         Glide.with(context).load(conversationViewState.participant.avatarUrl)
+            .error(ContextCompat.getDrawable(root.context, R.drawable.patric))
             .circleCrop()
             .into(participantAvatar)
         participantName.text = conversationViewState.participant.name

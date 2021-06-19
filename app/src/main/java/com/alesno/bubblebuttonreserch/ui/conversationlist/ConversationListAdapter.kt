@@ -2,9 +2,11 @@ package com.alesno.bubblebuttonreserch.ui.conversationlist
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.alesno.bubblebuttonreserch.R
 import com.alesno.bubblebuttonreserch.databinding.ItemConversationListBinding
 import com.alesno.bubblebuttonreserch.ui.conversationlist.ConversationListAdapter.ConversationListViewHolder
 import com.alesno.bubblebuttonreserch.ui.conversationlist.viewstate.ConversationInfoViewState
@@ -26,8 +28,9 @@ class ConversationListAdapter(
     override fun onBindViewHolder(holder: ConversationListViewHolder, position: Int) {
         val conversationInfo = getItem(position)
         with(holder.binding) {
-            Glide.with(this.root)
+            Glide.with(root.context)
                 .load(conversationInfo.participant.avatarUrl)
+                .error(ContextCompat.getDrawable(root.context, R.drawable.patric))
                 .circleCrop()
                 .into(participantAvatar)
             participantName.text = conversationInfo.participant.name

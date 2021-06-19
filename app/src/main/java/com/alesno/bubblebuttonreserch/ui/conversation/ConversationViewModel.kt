@@ -16,8 +16,8 @@ class ConversationViewModel : ViewModel() {
 
     private val mConversationState = MutableLiveData<ConversationViewState>()
 
-    fun init() {
-        FakeDataRepo.getConversation("1")
+    fun init(conversationId: String) {
+        FakeDataRepo.getConversation(conversationId)
             .onEach(mConversationState::postValue)
             .launchIn(viewModelScope)
     }
