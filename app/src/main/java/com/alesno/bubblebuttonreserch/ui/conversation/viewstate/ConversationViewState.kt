@@ -1,4 +1,4 @@
-package com.alesno.bubblebuttonreserch.ui.conversation
+package com.alesno.bubblebuttonreserch.ui.conversation.viewstate
 
 data class ConversationViewState(
     val messages: List<MessageViewState>,

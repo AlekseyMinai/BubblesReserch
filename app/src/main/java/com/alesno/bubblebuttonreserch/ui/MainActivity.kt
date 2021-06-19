@@ -12,6 +12,7 @@ import androidx.fragment.app.commit
 import com.alesno.bubblebuttonreserch.R
 import com.alesno.bubblebuttonreserch.databinding.ActivityMainBinding
 import com.alesno.bubblebuttonreserch.ui.conversation.ConversationFragment
+import com.alesno.bubblebuttonreserch.ui.conversationlist.ConversationListFragment
 import com.alesno.bubblebuttonreserch.viewBindings
 
 
@@ -21,16 +22,30 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && !canDisplayBubbles()) {
-            requestBubblePermissions()
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+//            requestBubblePermissions()
+//        }
 //        mBinding.button.setOnClickListener {
 //            BubbleNotificationManager.createNotificationChannel(this)
 //            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
 //                BubbleNotificationManager.createNotification(this)
 //            }
 //        }
-        openConversationFragment()
+        //openConversationFragment()
+        openConversationListFragment()
+    }
+
+    private fun openConversationListFragment() {
+        if (supportFragmentManager.findFragmentByTag(CONVERSATION_LIST_FRAGMENT_TAG) != null) {
+            return
+        }
+        supportFragmentManager.commit {
+            replace(
+                R.id.fragmentContainer,
+                ConversationListFragment.newInstance(),
+                CONVERSATION_LIST_FRAGMENT_TAG
+            ).addToBackStack(CONVERSATION_LIST_FRAGMENT_TAG)
+        }
     }
 
     private fun openConversationFragment() {
@@ -38,9 +53,9 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             return
         }
         supportFragmentManager.commit {
-            add(
+            replace(
                 R.id.fragmentContainer,
-                ConversationFragment.newInstance("1"),
+                ConversationFragment.newInstance("1", false),
                 CONVERSATION_FRAGMENT_TAG
             ).addToBackStack(CONVERSATION_FRAGMENT_TAG)
         }
@@ -69,6 +84,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     companion object {
         private const val REQUEST_CODE_BUBBLES_PERMISSION = 1212
         private const val CONVERSATION_FRAGMENT_TAG = "conversation_fragment"
+        private const val CONVERSATION_LIST_FRAGMENT_TAG = "conversation_list_fragment"
     }
 
 }

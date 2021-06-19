@@ -1,10 +1,10 @@
 package com.alesno.bubblebuttonreserch
 
-import com.alesno.bubblebuttonreserch.ui.conversation.ConversationViewState
-import com.alesno.bubblebuttonreserch.ui.conversation.MessageViewState
-import com.alesno.bubblebuttonreserch.ui.conversation.Participant
+import com.alesno.bubblebuttonreserch.ui.conversation.viewstate.ConversationViewState
+import com.alesno.bubblebuttonreserch.ui.conversation.viewstate.MessageViewState
+import com.alesno.bubblebuttonreserch.ui.conversation.viewstate.Participant
+import com.alesno.bubblebuttonreserch.ui.conversationlist.viewstate.ConversationInfoViewState
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 
 object FakeDataRepo {
@@ -12,8 +12,17 @@ object FakeDataRepo {
     private val mConversationsState = MutableStateFlow(createFakeData())
 
     fun getConversation(id: String) =
-        mConversationsState.asStateFlow()
-            .map { it[id] }
+        mConversationsState.map { it[id] }
+
+    fun getConversationList() =
+        mConversationsState.map {
+            it.map { pair ->
+                ConversationInfoViewState(
+                    conversationId = pair.key,
+                    participant = pair.value.participant
+                )
+            }
+        }
 
     private fun createFakeData(): Map<String, ConversationViewState> {
         val conversations = mutableMapOf<String, ConversationViewState>()

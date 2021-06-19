@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFF"
     android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -16,7 +17,32 @@
         <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#6331BC" />
+            android:background="#6331BC">
+
+            <LinearLayout
+
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/participantAvatar"
+                    android:layout_width="46dp"
+                    android:layout_height="46dp" />
+
+                <TextView
+                    android:id="@+id/participantName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="8dp"
+                    android:textColor="#FFF"
+                    android:textSize="16sp"
+                    tools:text="Джеймс Хетфилд" />
+
+            </LinearLayout>
+
+        </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -45,6 +71,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="center_vertical"
+            android:layout_margin="2dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -64,6 +91,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="center_vertical"
+            android:layout_margin="2dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/camera"
             app:layout_constraintTop_toTopOf="parent"
@@ -75,6 +103,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="center_vertical"
+            android:layout_margin="2dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

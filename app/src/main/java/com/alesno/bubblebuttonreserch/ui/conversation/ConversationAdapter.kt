@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.alesno.bubblebuttonreserch.databinding.ItemIncomingConversationBinding
 import com.alesno.bubblebuttonreserch.databinding.ItemOutgoingConversationBinding
+import com.alesno.bubblebuttonreserch.ui.conversation.viewstate.MessageViewState
 
 class ConversationAdapter :
     ListAdapter<MessageViewState, ConversationAdapter.MessageViewHolder>(ConversationDiffCallback) {
