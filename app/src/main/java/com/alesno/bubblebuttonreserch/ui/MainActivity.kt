@@ -35,12 +35,24 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         openConversationListFragment()
     }
 
+    override fun onBackPressed() {
+        val fragment =
+            supportFragmentManager.findFragmentByTag(CONVERSATION_LIST_FRAGMENT_TAG) as? ConversationListFragment
+        if (fragment?.onBackPressed() == true) {
+            return
+        }
+        if (fragment != null) {
+            finish()
+        }
+        super.onBackPressed()
+    }
+
     private fun openConversationListFragment() {
         if (supportFragmentManager.findFragmentByTag(CONVERSATION_LIST_FRAGMENT_TAG) != null) {
             return
         }
         supportFragmentManager.commit {
-            replace(
+            add(
                 R.id.fragmentContainer,
                 ConversationListFragment.newInstance(),
                 CONVERSATION_LIST_FRAGMENT_TAG

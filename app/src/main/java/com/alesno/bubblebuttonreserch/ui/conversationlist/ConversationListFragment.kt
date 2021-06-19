@@ -25,6 +25,15 @@ class ConversationListFragment : Fragment(R.layout.fragment_conversation_list) {
         subscribeToViewModel()
     }
 
+    fun onBackPressed(): Boolean {
+        val fragment = childFragmentManager.findFragmentByTag(CONVERSATION_FRAGMENT_TAG)
+        if (fragment != null) {
+            childFragmentManager.popBackStack()
+            return true
+        }
+        return false
+    }
+
     private fun subscribeToViewModel() {
         mViewModel.openConversation
             .onEach(::openConversationFragment)
