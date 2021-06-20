@@ -4,7 +4,6 @@ import android.app.*
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.LocusId
 import android.content.pm.ShortcutInfo
 import android.content.pm.ShortcutManager
 import android.graphics.Bitmap
@@ -48,36 +47,35 @@ object BubbleNotificationManager {
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
-    suspend fun createNotification(context: Context, participant: Participant): Notification {
+    suspend fun createNotification(context: Context, participant: Participant, conversationId: String): Notification {
         val avatarBitmap = context.getBitmapFromUrlOrError(participant.avatarUrl)
         val icon = Icon.createWithAdaptiveBitmap(avatarBitmap)
 
-        val bubbleIntent = createBubbleIntent(context)
+        val bubbleIntent = createBubbleIntent(context, conversationId)
         val bubbleData = createBubbleMetaData(context, bubbleIntent, icon)
-        val person = createSamplePerson(context, participant, icon)
-        val style = createMessagingStyle(person)
+        val person = createSamplePerson(participant, icon)
+        val style = createMessagingStyle(person, "Тут может быть последнее сообщение")
         val shortcutManager = context.getSystemService(ShortcutManager::class.java)
         val shortcut = createShortcut(context, person)
-        shortcutManager.dynamicShortcuts = listOf(shortcut)
+        //shortcutManager.dynamicShortcuts = listOf(shortcut)
 
         val notification = Notification.Builder(context, "123")
             .setContentIntent(bubbleIntent)
             .setSmallIcon(R.drawable.ic_snowflake)
-            .setCategory(Notification.CATEGORY_CALL)
-            .setContentTitle("Title")
-            .setContentText("Content text")
-            .setLocusId(LocusId(shortcut.id))
+            .setCategory(Notification.CATEGORY_MESSAGE)
+            //.setLocusId(LocusId(shortcut.id))
             .setBubbleMetadata(bubbleData)
             .setStyle(style)
-            .addPerson(person)
+            //.addPerson(person)
             .setShowWhen(true)
-            .setShortcutId(shortcut.id)
+            .setOnlyAlertOnce(true)
+            //.setShortcutId(shortcut.id)
             .build()
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         NotificationManagerCompat.from(context).apply {
-            notificationManager.notify(1, notification)
+            notificationManager.notify(conversationId.toInt(), notification)
         }
         return notification
     }
@@ -87,6 +85,7 @@ object BubbleNotificationManager {
             Glide.with(this)
                 .asBitmap()
                 .load(url)
+                .circleCrop()
                 .listener(object : RequestListener<Bitmap> {
 
                     override fun onLoadFailed(
@@ -123,8 +122,8 @@ object BubbleNotificationManager {
         }
     }
 
-    private fun createBubbleIntent(context: Context): PendingIntent {
-        val contentUri = "https://android.example.com/chat/1".toUri()
+    private fun createBubbleIntent(context: Context, conversationId: String): PendingIntent {
+        val contentUri = "https://android.example.com/chat/$conversationId".toUri()
 
         val target = Intent(context, BubbleActivity::class.java)
             .setAction(Intent.ACTION_VIEW)
@@ -139,11 +138,11 @@ object BubbleNotificationManager {
             .setIcon(icon)
             .setDesiredHeight(600)
             //.setAutoExpandBubble(true)
-            //.setSuppressNotification(true)
+            .setSuppressNotification(true)
             .build()
 
     @RequiresApi(Build.VERSION_CODES.P)
-    private fun createSamplePerson(context: Context, participant: Participant, icon: Icon) =
+    private fun createSamplePerson(participant: Participant, icon: Icon) =
         Person.Builder()
             .setName(participant.name)
             .setIcon(icon)
@@ -151,10 +150,10 @@ object BubbleNotificationManager {
             .build()
 
     @RequiresApi(Build.VERSION_CODES.P)
-    private fun createMessagingStyle(person: Person) =
+    private fun createMessagingStyle(person: Person, text: String) =
         Notification.MessagingStyle(person).addMessage(
             Notification.MessagingStyle.Message(
-                "TestText",
+                text,
                 System.currentTimeMillis(),
                 person
             )
@@ -169,8 +168,6 @@ object BubbleNotificationManager {
                     Intent.FLAG_ACTIVITY_CLEAR_TASK
                 )
             )
-            .setShortLabel("wtf")
-            .setLongLabel("asdf")
             .setIcon(Icon.createWithResource(context, R.drawable.ic_sn))
             .setPerson(person)
             .setActivity(ComponentName(context, MainActivity::class.java))

@@ -14,7 +14,8 @@ class BubbleActivity : AppCompatActivity(R.layout.activity_bubbles) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        openConversationFragment("1")
+        val conversationId = intent.data?.lastPathSegment ?: return
+        openConversationFragment(conversationId)
     }
 
     private fun openConversationFragment(conversationId: String) {
