@@ -15,12 +15,12 @@ import kotlinx.coroutines.flow.onEach
 
 class ConversationListFragment : Fragment(R.layout.fragment_conversation_list) {
 
-    private val mBinding = viewBindings { FragmentConversationListBinding.bind(it) }
+    private val mBinding by viewBindings { FragmentConversationListBinding.bind(it) }
     private val mViewModel by viewModels<ConversationListViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mBinding.value.conversationList.adapter = mViewModel.adapter
+        mBinding.conversationList.adapter = mViewModel.adapter
         mViewModel.init()
         subscribeToViewModel()
     }

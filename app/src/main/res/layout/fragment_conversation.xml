@@ -25,10 +25,18 @@
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
 
-                <ImageView
-                    android:id="@+id/participantAvatar"
-                    android:layout_width="46dp"
-                    android:layout_height="46dp" />
+                <com.google.android.material.circularreveal.cardview.CircularRevealCardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="24dp">
+
+                    <ImageView
+                        android:id="@+id/participantAvatar"
+                        android:layout_width="46dp"
+                        android:layout_height="46dp"
+                        android:src="@drawable/patric" />
+
+                </com.google.android.material.circularreveal.cardview.CircularRevealCardView>
 
                 <TextView
                     android:id="@+id/participantName"
