@@ -1,4 +1,4 @@
-package com.alesno.bubblebuttonreserch
+package com.alesno.bubblebuttonreserch.domain
 
 import com.alesno.bubblebuttonreserch.ui.conversation.viewstate.ConversationViewState
 import com.alesno.bubblebuttonreserch.ui.conversation.viewstate.MessageViewState
@@ -23,6 +23,9 @@ object FakeDataRepo {
                 )
             }
         }
+
+    fun getParticipant() =
+        mConversationsState.value["1"]?.participant
 
     private fun createFakeData(): Map<String, ConversationViewState> {
         val conversations = mutableMapOf<String, ConversationViewState>()

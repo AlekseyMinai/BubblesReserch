@@ -17,10 +17,10 @@ class BubbleButtonService : Service() {
         GlobalScope.launch {
             delay(3000)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                startForeground(
-                    1,
-                    BubbleNotificationManager.createNotification(this@BubbleButtonService)
-                )
+//                startForeground(
+//                    1,
+//                    BubbleNotificationManager.createNotification(this@BubbleButtonService)
+//                )
             }
         }
     }

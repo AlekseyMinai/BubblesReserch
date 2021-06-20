@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">BubblesReserch</string>
+    <string name="app_name">Bubbles Reserch</string>
+    <string name="setting">Setting</string>
 </resources>

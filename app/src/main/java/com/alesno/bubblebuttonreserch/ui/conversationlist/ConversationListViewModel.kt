@@ -2,7 +2,7 @@ package com.alesno.bubblebuttonreserch.ui.conversationlist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.alesno.bubblebuttonreserch.FakeDataRepo
+import com.alesno.bubblebuttonreserch.domain.FakeDataRepo
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 

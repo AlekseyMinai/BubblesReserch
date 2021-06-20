@@ -7,14 +7,26 @@ import android.content.Intent
 import android.content.LocusId
 import android.content.pm.ShortcutInfo
 import android.content.pm.ShortcutManager
+import android.graphics.Bitmap
 import android.graphics.drawable.Icon
 import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.core.net.toUri
 import com.alesno.bubblebuttonreserch.ui.BubbleActivity
 import com.alesno.bubblebuttonreserch.ui.MainActivity
+import com.alesno.bubblebuttonreserch.ui.conversation.viewstate.Participant
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 object BubbleNotificationManager {
 
@@ -36,15 +48,17 @@ object BubbleNotificationManager {
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
-    fun createNotification(context: Context): Notification {
+    suspend fun createNotification(context: Context, participant: Participant): Notification {
+        val avatarBitmap = context.getBitmapFromUrlOrError(participant.avatarUrl)
+        val icon = Icon.createWithAdaptiveBitmap(avatarBitmap)
+
         val bubbleIntent = createBubbleIntent(context)
-        val bubbleData = createBubbleMetaData(context, bubbleIntent)
-        val person = createSamplePerson(context)
+        val bubbleData = createBubbleMetaData(context, bubbleIntent, icon)
+        val person = createSamplePerson(context, participant, icon)
         val style = createMessagingStyle(person)
         val shortcutManager = context.getSystemService(ShortcutManager::class.java)
         val shortcut = createShortcut(context, person)
         shortcutManager.dynamicShortcuts = listOf(shortcut)
-
 
         val notification = Notification.Builder(context, "123")
             .setContentIntent(bubbleIntent)
@@ -68,6 +82,47 @@ object BubbleNotificationManager {
         return notification
     }
 
+    private suspend fun Context.getBitmapFromUrlOrError(url: String): Bitmap {
+        return suspendCoroutine { continuation ->
+            Glide.with(this)
+                .asBitmap()
+                .load(url)
+                .listener(object : RequestListener<Bitmap> {
+
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: Target<Bitmap>?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        val errorBitmap = ContextCompat.getDrawable(
+                            this@getBitmapFromUrlOrError,
+                            R.drawable.patric
+                        )?.toBitmap(42, 42)
+                        errorBitmap?.let { continuation.resume(it) }
+                            ?: continuation.resumeWithException(createException())
+                        return true
+                    }
+
+                    override fun onResourceReady(
+                        resource: Bitmap?,
+                        model: Any?,
+                        target: Target<Bitmap>?,
+                        dataSource: DataSource?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        resource?.let { continuation.resume(it) }
+                            ?: continuation.resumeWithException(createException())
+                        return true
+                    }
+
+                    private fun createException() =
+                        RuntimeException("Something went wrong when bitmap creating")
+
+                }).submit()
+        }
+    }
+
     private fun createBubbleIntent(context: Context): PendingIntent {
         val contentUri = "https://android.example.com/chat/1".toUri()
 
@@ -78,20 +133,20 @@ object BubbleNotificationManager {
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
-    private fun createBubbleMetaData(context: Context, bubbleIntent: PendingIntent) =
+    private fun createBubbleMetaData(context: Context, bubbleIntent: PendingIntent, icon: Icon) =
         Notification.BubbleMetadata.Builder()
             .setIntent(bubbleIntent)
-            .setIcon(Icon.createWithResource(context, R.drawable.ic_snowflake))
+            .setIcon(icon)
             .setDesiredHeight(600)
             //.setAutoExpandBubble(true)
             //.setSuppressNotification(true)
             .build()
 
     @RequiresApi(Build.VERSION_CODES.P)
-    private fun createSamplePerson(context: Context) =
+    private fun createSamplePerson(context: Context, participant: Participant, icon: Icon) =
         Person.Builder()
-            .setName("Name")
-            .setIcon(Icon.createWithResource(context, R.drawable.ic_snowflake))
+            .setName(participant.name)
+            .setIcon(icon)
             .setImportant(true)
             .build()
 
