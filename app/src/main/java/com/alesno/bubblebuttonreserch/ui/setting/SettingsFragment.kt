@@ -12,13 +12,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.alesno.bubblebuttonreserch.BubbleNotificationManager
+import com.alesno.bubblebuttonreserch.BubbleNotificationManager2
 import com.alesno.bubblebuttonreserch.R
 import com.alesno.bubblebuttonreserch.databinding.FragmentSettingsBinding
 import com.alesno.bubblebuttonreserch.domain.FakeDataRepo
 import com.alesno.bubblebuttonreserch.viewBindings
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 
 class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
@@ -39,12 +40,23 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
                 }
                 BubbleNotificationManager.createNotificationChannel(requireContext())
                 lifecycleScope.launch {
-                    val id = "0"
-                    BubbleNotificationManager.createNotification(
-                        context = requireContext(),
-                        participant = FakeDataRepo.getParticipant(id)!!,
-                        conversationId = id
-                    )
+                    val id = "1"
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                        withContext(Dispatchers.IO) {
+                            delay(2000)
+                        }
+                        BubbleNotificationManager2.createNotification(
+                            context = requireContext(),
+                            participant = FakeDataRepo.getParticipant(id)!!,
+                            conversationId = id
+                        )
+                    } else {
+                        BubbleNotificationManager.createLegacyNotification(
+                            context = requireContext(),
+                            participant = FakeDataRepo.getParticipant(id)!!,
+                            conversationId = id
+                        )
+                    }
                 }
             }
         }
@@ -80,8 +92,8 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     // TODO: 6/20/2021 Вынести в другое место
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun requestBubblePermissions() {
-        val intent = Intent(android.provider.Settings.ACTION_APP_NOTIFICATION_BUBBLE_SETTINGS)
-            .putExtra(android.provider.Settings.EXTRA_APP_PACKAGE, requireActivity().packageName)
+        val intent = Intent(Settings.ACTION_APP_NOTIFICATION_BUBBLE_SETTINGS)
+            .putExtra(Settings.EXTRA_APP_PACKAGE, requireActivity().packageName)
         startActivityForResult(intent, REQUEST_CODE_BUBBLES_PERMISSION)
     }
 

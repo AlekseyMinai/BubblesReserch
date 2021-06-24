@@ -47,29 +47,23 @@ object BubbleNotificationManager {
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
-    suspend fun createNotification(context: Context, participant: Participant, conversationId: String): Notification {
+    suspend fun createLegacyNotification(context: Context, participant: Participant, conversationId: String): Notification {
         val avatarBitmap = context.getBitmapFromUrlOrError(participant.avatarUrl)
         val icon = Icon.createWithAdaptiveBitmap(avatarBitmap)
 
         val bubbleIntent = createBubbleIntent(context, conversationId)
         val bubbleData = createBubbleMetaData(context, bubbleIntent, icon)
         val person = createSamplePerson(participant, icon)
-        val style = createMessagingStyle(person, "Тут может быть последнее сообщение")
-        val shortcutManager = context.getSystemService(ShortcutManager::class.java)
-        val shortcut = createShortcut(context, person)
-        //shortcutManager.dynamicShortcuts = listOf(shortcut)
+        val style = createMessagingStyle(person, "Привет, как дела?")
 
         val notification = Notification.Builder(context, "123")
             .setContentIntent(bubbleIntent)
             .setSmallIcon(R.drawable.ic_snowflake)
             .setCategory(Notification.CATEGORY_MESSAGE)
-            //.setLocusId(LocusId(shortcut.id))
             .setBubbleMetadata(bubbleData)
             .setStyle(style)
-            //.addPerson(person)
             .setShowWhen(true)
             .setOnlyAlertOnce(true)
-            //.setShortcutId(shortcut.id)
             .build()
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -122,7 +116,7 @@ object BubbleNotificationManager {
         }
     }
 
-    private fun createBubbleIntent(context: Context, conversationId: String): PendingIntent {
+    fun createBubbleIntent(context: Context, conversationId: String): PendingIntent {
         val contentUri = "https://android.example.com/chat/$conversationId".toUri()
 
         val target = Intent(context, BubbleActivity::class.java)
@@ -142,7 +136,7 @@ object BubbleNotificationManager {
             .build()
 
     @RequiresApi(Build.VERSION_CODES.P)
-    private fun createSamplePerson(participant: Participant, icon: Icon) =
+    fun createSamplePerson(participant: Participant, icon: Icon) =
         Person.Builder()
             .setName(participant.name)
             .setIcon(icon)
@@ -150,7 +144,7 @@ object BubbleNotificationManager {
             .build()
 
     @RequiresApi(Build.VERSION_CODES.P)
-    private fun createMessagingStyle(person: Person, text: String) =
+    fun createMessagingStyle(person: Person, text: String) =
         Notification.MessagingStyle(person).addMessage(
             Notification.MessagingStyle.Message(
                 text,
@@ -158,20 +152,5 @@ object BubbleNotificationManager {
                 person
             )
         )
-
-    @RequiresApi(Build.VERSION_CODES.Q)
-    private fun createShortcut(context: Context, person: Person) =
-        ShortcutInfo.Builder(context, "shortcut")
-            .setLongLived(true)
-            .setIntent(
-                Intent(Intent.ACTION_MAIN, Uri.EMPTY, context, BubbleActivity::class.java).setFlags(
-                    Intent.FLAG_ACTIVITY_CLEAR_TASK
-                )
-            )
-            .setIcon(Icon.createWithResource(context, R.drawable.ic_sn))
-            .setPerson(person)
-            .setActivity(ComponentName(context, MainActivity::class.java))
-            .build()
-
 
 }

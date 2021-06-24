@@ -27,7 +27,7 @@ class BubbleActivity : AppCompatActivity(R.layout.activity_bubbles) {
                 R.id.fragmentContainer,
                 ConversationFragment.newInstance(conversationId, true),
                 CONVERSATION_FRAGMENT_TAG
-            ).addToBackStack(CONVERSATION_FRAGMENT_TAG)
+            )
         }
     }
 
